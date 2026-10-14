@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>X3FM Converter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (~68ch) with full-bleed bands; the hero carries the Foveon three-layer motif from the app icon */
+:root {
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --fg: #151a24;
+  --muted: #5a6476;
+  --line: #d9dfea;
+  --accent: #2f6fe0;          /* top layer - blue */
+  --layer-b: #4a86f0;
+  --layer-g: #3fae63;
+  --layer-r: #db4c4c;
+  --good: #24834a;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151d; --surface: #181e29; --fg: #e8ecf3; --muted: #9aa5b8; --line: #2a3242;
+    --accent: #6f9ff6; --good: #5cc785; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151d; --surface: #181e29; --fg: #e8ecf3; --muted: #9aa5b8; --line: #2a3242;
+  --accent: #6f9ff6; --good: #5cc785; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--body); padding-inline: 20px; padding-block: 0 48px; }
+.wrap { max-width: 860px; margin-inline: auto; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.label { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+code, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+section { display: grid; gap: 22px; }
+
+/* hero */
+.hero { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; padding-block: 48px 8px; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+.hero .lede { font-size: 1.2rem; color: var(--muted); max-width: 38ch; margin-top: 14px; }
+.hero .lede strong { color: var(--fg); font-weight: 600; }
+.req { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.chip { font: 500 0.78rem/1 var(--mono); padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface); }
+.layers { width: 190px; height: 190px; position: relative; }
+.layers span { position: absolute; left: 15px; width: 160px; height: 92px; border-radius: 8px; transform: rotate(-30deg) skewX(30deg) scaleY(0.86); box-shadow: 0 14px 24px rgb(0 0 0 / 0.22); }
+.layers .r { background: var(--layer-r); top: 92px; }
+.layers .g { background: var(--layer-g); top: 56px; }
+.layers .b { background: var(--layer-b); top: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .layers span { transition: transform 0.4s ease; }
+  .layers:hover .b { transform: rotate(-30deg) skewX(30deg) scaleY(0.86) translate(-6px, -10px); }
+  .layers:hover .r { transform: rotate(-30deg) skewX(30deg) scaleY(0.86) translate(6px, 10px); }
+}
+
+/* pipeline */
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.step { padding: 18px 16px; display: grid; gap: 6px; align-content: start; border-left: 1px solid var(--line); min-width: 0; }
+.step:first-child { border-left: 0; }
+.step .n { font: 500 0.8rem var(--mono); color: var(--accent); }
+.step p { color: var(--muted); font-size: 0.92rem; }
+
+/* features */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 40px; }
+.feat { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.feat ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.feat li { display: grid; gap: 2px; padding-left: 16px; position: relative; }
+.feat li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); transform: rotate(45deg); }
+.feat li b { font-weight: 600; }
+.feat li span { color: var(--muted); font-size: 0.93rem; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 0.74rem/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: color-mix(in srgb, var(--bg) 60%, var(--surface)); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.yes { color: var(--good); font-weight: 600; }
+.no { color: var(--muted); }
+.us { background: color-mix(in srgb, var(--accent) 9%, var(--surface)); font-weight: 600; }
+.note { font-size: 0.88rem; color: var(--muted); max-width: 68ch; }
+
+/* setup */
+ol.setup { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; max-width: 68ch; }
+.limits { display: grid; gap: 8px; max-width: 68ch; color: var(--muted); }
+footer { border-top: 1px solid var(--line); padding-top: 20px; font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; }
+
+@media (max-width: 720px) {
+  .hero { grid-template-columns: 1fr; }
+  .layers { width: 150px; height: 150px; order: -1; }
+  .layers span { width: 125px; height: 72px; left: 12px; }
+  .layers .r { top: 74px; } .layers .g { top: 45px; } .layers .b { top: 16px; }
+  .flow { grid-template-columns: 1fr 1fr; }
+  .step:nth-child(3) { border-left: 0; }
+  .step:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 440px) {
+  .flow { grid-template-columns: 1fr; }
+  .step { border-left: 0; border-top: 1px solid var(--line); }
+  .step:first-child { border-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div>
+      <div class="label">Sigma DP Merrill · X3F → DNG</div>
+      <h1 style="margin-top:12px">X3FM Converter</h1>
+      <p class="lede">Open your Merrill raw files in Adobe Camera Raw with <strong>the colour and detail of SIGMA Photo Pro</strong>, then edit them with Camera Raw's full raw controls.</p>
+      <div class="req">
+        <span class="chip">DP1 · DP2 · DP3 Merrill</span>
+        <span class="chip">macOS 14+ · Apple silicon</span>
+        <span class="chip">needs SIGMA Photo Pro 6</span>
+        <span class="chip">Camera Raw / Photoshop</span>
+      </div>
+    </div>
+    <div class="layers" aria-hidden="true"><span class="r"></span><span class="g"></span><span class="b"></span></div>
+  </header>
+
+  <section>
+    <div class="label">Why it exists</div>
+    <div class="prose">
+      <p>The Merrill's Foveon sensor records red, green and blue in three stacked layers at every pixel. SIGMA Photo Pro is still the best renderer for these files, but it is a slow editor with few tools. Camera Raw is a great editor, but its own handling of Merrill files does not look like SPP.</p>
+      <p>X3FM Converter combines the two. It does not imitate SPP's look: it has SPP's own processing engine render each file, then turns that result back into a raw DNG that Camera Raw can edit freely.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>How a file is converted</h2>
+    <div class="flow">
+      <div class="step"><span class="n">1 · read</span><h3>X3F</h3><p>Raw sensor data, the camera's white-balance preset and any edits saved in SPP.</p></div>
+      <div class="step"><span class="n">2 · render</span><h3>SPP engine</h3><p>SIGMA Photo Pro's installed engine renders the image: colour, noise reduction, sharpening, highlight repair.</p></div>
+      <div class="step"><span class="n">3 · recover</span><h3>Linear DNG</h3><p>The render is converted back to linear raw data with SPP's tone curve and colour profiles embedded.</p></div>
+      <div class="step"><span class="n">4 · edit</span><h3>Camera Raw</h3><p>Opens looking like SPP, with every Camera Raw control available, including extra highlight headroom.</p></div>
+    </div>
+    <p class="note">About 5 seconds per file, or about 3.5 seconds per file when converting a batch two at a time.</p>
+  </section>
+
+  <section>
+    <h2>How close it is to SIGMA Photo Pro</h2>
+    <p class="note">Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with SPP's own output. ΔE is the median colour difference; values under about 1 are not visible.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Test</th><th class="num">Median ΔE</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Standard colour, default settings</td><td class="num">0.1 – 0.3</td><td>Detail and noise match SPP (ratio 1.00)</td></tr>
+          <tr><td>White-balance presets, all 8 (9 shots)</td><td class="num">0.09 – 0.30</td><td>Auto, Daylight, Shade, Overcast, Incandescent, Fluorescent, Flash, Custom</td></tr>
+          <tr><td>Monochrome</td><td class="num">0.10 – 0.40</td><td>SPP's own black-and-white rendering</td></tr>
+          <tr><td>Fill Light +1 / +2</td><td class="num">0.08 – 0.31</td><td>Baked in at conversion</td></tr>
+          <tr><td>Noise reduction and sharpness extremes</td><td class="num">0.09 – 0.17</td><td>Off/Max noise reduction, sharpness ±1</td></tr>
+          <tr><td>Colour modes: Portrait, Neutral, Vivid, Landscape</td><td class="num">0.07 – 0.43</td><td>Switchable profiles in Camera Raw</td></tr>
+          <tr><td>Colour mode: FOV Classic Blue</td><td class="num">0.35 – 1.26</td><td>Less exact on very saturated colours</td></tr>
+          <tr><td>A file edited and saved in SPP</td><td class="num">0.70</td><td>Outside near-white areas</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Features</h2>
+    <div class="cols">
+      <div class="feat">
+        <div class="label">The look</div>
+        <ul>
+          <li><b>SPP Standard by default</b><span>The same colour, tone, noise reduction and sharpening SPP gives you out of the box.</span></li>
+          <li><b>All SPP colour modes as profiles</b><span>Vivid, Neutral, Portrait, Landscape and FOV Classic Blue in Camera Raw's Profile menu, switchable without reconverting.</span></li>
+          <li><b>Monochrome mode</b><span>SPP's Foveon black and white: its layer mix, monochrome noise reduction and tone curve. Opens in Camera Raw's Black &amp; White mode.</span></li>
+          <li><b>White balance as shot</b><span>Every camera preset converts with SPP's colour matrix for that light, not just a temperature shift.</span></li>
+          <li><b>Your SPP edits</b><span>Files edited and saved in SPP convert with those edits: exposure, contrast, shadow, highlight, saturation, sharpness, fill light, noise reduction and colour mode.</span></li>
+          <li><b>Advanced settings</b><span>Highlight Control (Neutralize to Restore), X3 Fill Light, Sharpness, and SPP's five-step Chroma and Luminance noise reduction.</span></li>
+        </ul>
+      </div>
+      <div class="feat">
+        <div class="label">The workflow</div>
+        <ul>
+          <li><b>Double-click to Camera Raw</b><span>Double-click an X3F in Finder: it converts in the background and opens in Camera Raw, with no window.</span></li>
+          <li><b>Batch window</b><span>Drop files or folders, tick the ones you want and convert. Files with SPP edits are tagged.</span></li>
+          <li><b>Skips what is done</b><span>Already converted with the same settings? Skipped. Change a setting and it converts again.</span></li>
+          <li><b>Correct Finder previews</b><span>Thumbnails and Quick Look show the real look, not a flat, washed-out version.</span></li>
+          <li><b>Highlight headroom</b><span>Camera Raw can still recover detail in highlights that SPP clips to white.</span></li>
+          <li><b>Compact files</b><span>Lossless compressed DNGs of about 54 MB, saved next to the original or in a folder you choose.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Compared with other ways to open X3F files</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th></th><th>X3FM Converter</th><th>SIGMA Photo Pro</th><th>Open-source X3F decoders</th><th>Generic raw editors</th></tr></thead>
+        <tbody>
+          <tr><td>SPP's colour and detail</td><td class="us yes">Yes, from SPP's engine</td><td class="yes">Yes</td><td class="no">No, own colour science</td><td class="no">No</td></tr>
+          <tr><td>Edit in Camera Raw and Photoshop</td><td class="us yes">Yes, full raw controls</td><td class="no">No</td><td>Partly, as a plain DNG</td><td class="yes">Yes</td></tr>
+          <tr><td>Colour modes, Monochrome, Fill Light</td><td class="us yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr><td>Reads edits saved in SPP</td><td class="us yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+          <tr><td>Highlights beyond SPP's white point</td><td class="us yes">Yes</td><td class="no">No</td><td>Varies</td><td>Varies</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Getting started</h2>
+    <ol class="setup">
+      <li>Install <b>SIGMA Photo Pro 6</b> in your Applications folder if it isn't there already. The converter uses its engine and does not work without it.</li>
+      <li>Unzip the package and copy <b>X3FM Converter</b> and <b>X3FM to Camera Raw</b> into your Applications folder.</li>
+      <li>Open X3FM Converter with right-click › Open the first time. The apps are not signed by a registered Apple developer, so macOS asks once.</li>
+      <li>Click <b>Use for double-click</b> at the bottom of the window to make double-clicked X3F files open straight in Camera Raw.</li>
+    </ol>
+    <div class="limits">
+      <div class="label">Good to know</div>
+      <p>Works with the DP Merrill cameras. SPP edits to monochrome settings, the tone-curve editor, crop and lens corrections are not read yet. Saving DNGs to a Mac folder is about twice as fast as writing them back to the SD card.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>A personal project shared privately. Not affiliated with or endorsed by SIGMA or Adobe. SIGMA Photo Pro, Foveon and Merrill belong to SIGMA; Camera Raw and Photoshop belong to Adobe.</p>
+    <p>Version 1.7.1</p>
+  </footer>
+
+</div>
+</body>
+</html>
