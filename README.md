@@ -4,7 +4,9 @@ Open Sigma DP Merrill raw files (X3F) in Adobe Camera Raw with **the colour and 
 
 **Requires:** a DP1, DP2 or DP3 Merrill · macOS 14+ on Apple silicon · **SIGMA Photo Pro 6** installed · Adobe Camera Raw / Photoshop
 
-**Download:** see [Releases](../../releases) → `X3FM-Converter-1.7.1.zip`
+**Download:** see [Releases](../../releases) → `X3FM-Converter-1.7.2.zip`
+
+![X3FM Converter converting a batch of Merrill X3F files](screenshots/2-converting.png)
 
 ---
 
@@ -56,6 +58,12 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 - **Highlight headroom** – Camera Raw can still recover detail in highlights that SPP clips to white.
 - **Compact files** – lossless compressed DNGs of about 54 MB, saved next to the original or in a folder you choose.
 
+## Screenshots
+
+| Start | Advanced settings |
+|---|---|
+| ![Start screen](screenshots/1-start.png) | ![Advanced settings](screenshots/3-advanced-settings.png) |
+
 ## Compared with other ways to open X3F files
 
 | | X3FM Converter | SIGMA Photo Pro | Open-source X3F decoders | Generic raw editors |
@@ -69,7 +77,7 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 ## Getting started
 
 1. Install **SIGMA Photo Pro 6** in your Applications folder if it isn't there already. The converter uses its engine and does not work without it.
-2. Download `X3FM-Converter-1.7.1.zip` from Releases, unzip it and copy **X3FM Converter** and **X3FM to Camera Raw** into your Applications folder.
+2. Download `X3FM-Converter-1.7.2.zip` from Releases, unzip it and copy **X3FM Converter** and **X3FM to Camera Raw** into your Applications folder.
 3. Open X3FM Converter with right-click › Open the first time. The apps are not signed by a registered Apple developer, so macOS asks once.
 4. Click **Use for double-click** at the bottom of the window to make double-clicked X3F files open straight in Camera Raw.
 
@@ -77,4 +85,4 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 
 ---
 
-Not affiliated with or endorsed by SIGMA or Adobe. SIGMA Photo Pro, Foveon and Merrill belong to SIGMA; Camera Raw and Photoshop belong to Adobe.
+A personal project. Not affiliated with or endorsed by SIGMA or Adobe. SIGMA Photo Pro, Foveon and Merrill belong to SIGMA; Camera Raw and Photoshop belong to Adobe.
