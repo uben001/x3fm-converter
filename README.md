@@ -77,4 +77,4 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 
 ---
 
-A personal project shared privately. Not affiliated with or endorsed by SIGMA or Adobe. SIGMA Photo Pro, Foveon and Merrill belong to SIGMA; Camera Raw and Photoshop belong to Adobe. `overview.html` in this repository is the same overview as a designed page.
+A personal project shared privately. Not affiliated with or endorsed by SIGMA or Adobe. SIGMA Photo Pro, Foveon and Merrill belong to SIGMA; Camera Raw and Photoshop belong to Adobe.
