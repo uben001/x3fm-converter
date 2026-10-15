@@ -4,7 +4,7 @@ Open Sigma DP Merrill raw files (X3F) in Adobe Camera Raw with **the colour and 
 
 **Requires:** a DP1, DP2 or DP3 Merrill · macOS 14+ on Apple silicon · **SIGMA Photo Pro 6** installed · Adobe Camera Raw / Photoshop
 
-**Download:** see [Releases](../../releases) → `X3FM-Converter-1.7.2.zip`
+**Download:** see [Releases](../../releases) → `X3FM-Converter-1.8.zip`
 
 ![X3FM Converter converting a batch of Merrill X3F files](screenshots/2-converting.png)
 
@@ -54,7 +54,8 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 - **Double-click to Camera Raw** – double-click an X3F in Finder: it converts in the background and opens in Camera Raw, with no window.
 - **Batch window** – drop files or folders, tick the ones you want and convert. Files with SPP edits are tagged.
 - **Skips what is done** – already converted with the same settings? Skipped. Change a setting and it converts again.
-- **Correct Finder previews** – thumbnails and Quick Look show the real look, not a flat, washed-out version.
+- **X3F previews in Finder** – X3F files show their photo as the Finder icon and open full size in Quick Look (space bar), turned upright. macOS can't do this on its own.
+- **Correct DNG previews** – the converted DNGs' thumbnails and Quick Look show the real look, not a flat, washed-out version.
 - **Highlight headroom** – Camera Raw can still recover detail in highlights that SPP clips to white.
 - **Compact files** – lossless compressed DNGs of about 54 MB, saved next to the original or in a folder you choose.
 
@@ -77,11 +78,12 @@ Measured by rendering the DNG in Camera Raw and comparing it pixel by pixel with
 ## Getting started
 
 1. Install **SIGMA Photo Pro 6** in your Applications folder if it isn't there already. The converter uses its engine and does not work without it.
-2. Download `X3FM-Converter-1.7.2.zip` from Releases, unzip it and copy **X3FM Converter** and **X3FM to Camera Raw** into your Applications folder.
+2. Download `X3FM-Converter-1.8.zip` from Releases, unzip it and copy **X3FM Converter** and **X3FM to Camera Raw** into your Applications folder.
 3. Open X3FM Converter with right-click › Open the first time. The apps are not signed by a registered Apple developer, so macOS asks once.
 4. Click **Use for double-click** at the bottom of the window to make double-clicked X3F files open straight in Camera Raw.
+5. X3F previews in Finder start working after X3FM Converter has been opened once. If they don't appear, turn on X3FM Converter in **System Settings › General › Login Items & Extensions › Quick Look**.
 
-**Good to know:** works with the DP Merrill cameras. SPP edits to monochrome settings, the tone-curve editor, crop and lens corrections are not read yet. Saving DNGs to a Mac folder is about twice as fast as writing them back to the SD card.
+**Good to know:** works with the DP Merrill cameras. Finder previews show the JPEG the camera saved inside each X3F, not the SPP look. SPP edits to monochrome settings, the tone-curve editor, crop and lens corrections are not read yet. Saving DNGs to a Mac folder is about twice as fast as writing them back to the SD card.
 
 ---
 
